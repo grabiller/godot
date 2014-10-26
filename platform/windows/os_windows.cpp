@@ -976,12 +976,18 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 		return;											// Return 
 	}
 	
+	DEVMODE current;
+	memset(&current,0,sizeof(current));
+	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &current);
+	
+	if( p_desired.width == 0 || p_desired.height == 0 ) {
+	  video_mode.width  = current.dmPelsWidth;
+	  video_mode.height = current.dmPelsHeight;
+	  WindowRect.right  = video_mode.width;
+	  WindowRect.bottom = video_mode.height;
+	}
 	
 	if (video_mode.fullscreen) {
-
-		DEVMODE current;
-		memset(&current,0,sizeof(current));
-		EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &current);
 
 		DEVMODE dmScreenSettings;
 		memset(&dmScreenSettings,0,sizeof(dmScreenSettings));
